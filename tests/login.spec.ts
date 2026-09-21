@@ -1,37 +1,34 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
 
 test.describe('Login functionality', () => {
+  let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    loginPage = new LoginPage(page);
+    await loginPage.goto();
   });
 
-  test('should log in successfully with valid credentials', async ({ page }) => {
-    await page.getByPlaceholder('Username').fill('standard_user');
-    await page.getByPlaceholder('Password').fill('secret_sauce');
-    await page.getByRole('button', { name: 'Login' }).click();
+  test('should login successfully with valid credentials', async () => {
+    await loginPage.login('standard_user', 'secret_sauce');
 
-    await expect(page).toHaveURL(/inventory/);
-    await expect(page.locator('.inventory_list')).toBeVisible();
+    await expect(loginPage.inventoryList).toBeVisible();
   });
 
-  test('should display an error with invalid credentials', async ({ page }) => {
-    await page.getByPlaceholder('Username').fill('invalid_user');
-    await page.getByPlaceholder('Password').fill('wrong_password');
-    await page.getByRole('button', { name: 'Login' }).click();
+  test('should display an error with invalid credentials', async () => {
+    await loginPage.login('invalid_user', 'wrong_password');
 
-    await expect(page.locator('[data-test="error"]')).toBeVisible();
-    await expect(page.locator('[data-test="error"]')).toContainText(
+    await expect(loginPage.errorMessage).toBeVisible();
+    await expect(loginPage.errorMessage).toContainText(
       'Username and password do not match'
     );
   });
 
-  test('should require a username when fields are empty', async ({ page }) => {
-    await page.getByRole('button', { name: 'Login' }).click();
+  test('should require a username when fields are empty', async () => {
+    await loginPage.loginButton.click();
 
-    await expect(page.locator('[data-test="error"]')).toContainText(
+    await expect(loginPage.errorMessage).toContainText(
       'Username is required'
     );
   });
-
 });
