@@ -1,0 +1,15 @@
+{
+  "name": "qa-automation-portfolio",
+  "version": "1.0.0",
+  "description": "QA automation portfolio using Playwright and TypeScript",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}
